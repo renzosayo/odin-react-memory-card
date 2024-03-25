@@ -17,7 +17,7 @@
 
 h1 {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 40;
+  font-size: 50;
 }
 
 .card {
@@ -26,4 +26,5 @@ h1 {
 
 .card img {
   height: 120px;
+  width: 120px;
 }

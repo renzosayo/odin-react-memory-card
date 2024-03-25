@@ -1,10 +1,12 @@
+import { useEffect, useState } from "react";
 import Card from "./Card";
-import { useState } from "react";
+import Scoreboard from "./Scoreboard";
 
-export default function Game() {
-  // clicked images
+export default function Game2() {
+  const [images, setImages] = useState({});
   const [clicks, setClicks] = useState([]);
-  const pokemonNames = [
+  const [highScore, setHighScore] = useState(0);
+  const names = [
     "milotic",
     "heracross",
     "flygon",
@@ -19,15 +21,24 @@ export default function Game() {
     "scizor",
   ];
 
-  // const pokemonImages = [];
+  useEffect(() => {
+    names.forEach(async (name) => {
+      const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+      const data = await res.json();
+      const img = data.sprites.front_default;
+      setImages((prev) => {
+        return { ...prev, [name]: img };
+      });
+    });
+  }, []);
 
-  const handleClick = (name) => {
-    setClicks([...clicks, name]);
-  };
-
-  let cards = pokemonNames.map((pokemon) => {
-    return <Card name={pokemon} key={pokemon} handleClick={handleClick} />;
-  });
+  useEffect(() => {
+    if (clicks.length > highScore) setHighScore(clicks.length);
+    if (clicks.length === names.length) {
+      alert("You Win!");
+      setClicks([]);
+    }
+  }, [clicks]);
 
   const randomizeArray = (arr) => {
     const newArr = [];
@@ -40,7 +51,35 @@ export default function Game() {
     return newArr;
   };
 
+  const handleClick = (name) => {
+    if (clicks.includes(name)) {
+      alert("You lose!");
+      setClicks([]);
+    } else setClicks((prev) => [...prev, name]);
+  };
+
+  let cards = names.map((pokemon) => {
+    return (
+      <>
+        <div key={pokemon}>
+          <Card
+            name={pokemon}
+            url={images[pokemon]}
+            handleClick={() => {
+              handleClick(pokemon);
+            }}
+          />
+        </div>
+      </>
+    );
+  });
+
   cards = randomizeArray(cards);
 
-  return <div className="game">{cards}</div>;
+  return (
+    <>
+      <Scoreboard score={clicks.length} highScore={highScore} />
+      <div className="game">{cards}</div>
+    </>
+  );
 }

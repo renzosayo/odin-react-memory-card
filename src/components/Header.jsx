@@ -5,8 +5,6 @@ export default function Header() {
       <p className="instructions">
         Select all the cards without picking the same in a row to win!
       </p>
-      <p className="current-score">Score: </p>
-      <p className="high-score">Best Score: </p>
     </div>
   );
 }

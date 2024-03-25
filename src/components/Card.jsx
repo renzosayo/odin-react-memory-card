@@ -1,37 +1,30 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-export default function Card({ name, handleClick }) {
+export default function Card({ name, url, handleClick }) {
   const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
-    fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
-      .then((res) => {
-        if (!res.ok) throw Error("could not fetch");
-        return res.json();
-      })
-      .then((data) => {
-        setImageUrl(data.sprites.front_default);
-      })
-      .catch((e) => {
-        console.log(e.message);
-      });
-  });
+    setImageUrl(url);
+  }, [url]);
 
   return (
-    <div className="card">
-      <img
-        src={imageUrl}
-        alt={name}
-        onClick={() => {
-          handleClick(name);
-        }}
-      />
-    </div>
+    url && (
+      <div className="card">
+        <img
+          src={imageUrl}
+          alt={name}
+          onClick={() => {
+            handleClick(name);
+          }}
+        />
+      </div>
+    )
   );
 }
 
 Card.propTypes = {
+  url: PropTypes.string,
   name: PropTypes.string,
   handleClick: PropTypes.func,
 };
